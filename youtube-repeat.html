@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="main.css">
+  </head>
+  <body>
+    <h2>Youtube Repeater</h3>
+    <div>
+      <div class="row">Youtube URL:  
+        <input type="text" id="url">
+        <button onclick="submitID()">GO !</button>
+      </div>
+      <div class="row">
+        <div class="rowElement">Repeating: </div>
+        <div class="rowElement" id="repeatStatus">Enabled</div>
+        <button id="repeatButton" onclick="RepeatButtonClicked()">Disable</button>
+        <div class="rowElement">Repeated times: </div>
+        <div id=repeatTime class="rowElement">0</div>
+      </div>
+      <div class="row">
+        <h4 class="rowElement">Now Playing:   </h4>
+        <div id=videoName class="rowElement"></div>
+      </div>
+    </div>
+    <div id="player"></div>
+    <script src="youtube-repeat.js"></script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+.rowElement{
+	display: inline-block;
+}
+
+.row{
+	margin: 1em;
+}
+
+#url{
+	width: 30em;
+}
+
+#repeatButton{
+	margin-right: 10em;
+}
+
+h4{
+	margin: 0em;
+}
+
+html, body{
+	height: 3em;
+	text-align: center;
+}
