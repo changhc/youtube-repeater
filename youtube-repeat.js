@@ -45,7 +45,7 @@ function stopVideo() {
 
 function submitID(){
   	if(player == null) return;
-  	re = new RegExp("(?:https://www.youtube.com/watch\\?v=)([0-9A-Za-z_]+)");
+  	re = new RegExp("(?:https://www.youtube.com/watch\\?v=)([0-9A-Za-z_-]+)");
   	vid = re.exec(document.getElementById("url").value)[1];
   	player.loadVideoById(vid, 0);
   
