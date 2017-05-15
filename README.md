@@ -6,4 +6,4 @@ It's ADS-FREE!
 
 --
 
-Try it [here](https://changhc.github.io/project/youtube-repeat.html).
+Try it [here](https://changhc.github.io/youtube-repeater/youtube-repeat.html).
