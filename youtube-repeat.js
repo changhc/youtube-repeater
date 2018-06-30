@@ -1,4 +1,4 @@
-var vid = 'qO8yfBLNVjU';
+var vid = document.cookie === "" ? 'qO8yfBLNVjU' : document.cookie;
 var count = 0;
 var isRepeating = true;
 
@@ -16,16 +16,19 @@ function onYouTubeIframeAPIReady() {
 		videoId: vid,
 		events: {
 		  'onReady': onPlayerReady,
-		  'onStateChange': onPlayerStateChange
+		  'onStateChange': onPlayerStateChange,
+          'onError': onPlayerError,
 		}
 	});
 }
 
 
 function onPlayerReady(event) {
-  
   event.target.playVideo();
-  
+}
+
+function onPlayerError(event) {
+    window.alert('Oops! Please try again or enter a valid youtube URL!');
 }
 
 function onPlayerStateChange(event) {
@@ -36,6 +39,7 @@ function onPlayerStateChange(event) {
 		document.getElementById("repeatTime").innerHTML = count.toString();
   	}
   	else if(event.data == YT.PlayerState.PLAYING){
+        document.cookie = event.target.getVideoData()['video_id'];
 		document.getElementById("videoName").innerHTML = player.getVideoData().title;
   	}
 }
@@ -44,9 +48,14 @@ function stopVideo() {
 }
 
 function submitID(){
-  	if(player == null) return;
-  	re = new RegExp("(?:https://www.youtube.com/watch\\?v=)([0-9A-Za-z_-]+)");
-  	vid = re.exec(document.getElementById("url").value)[1];
+  	if(player === null) return;
+  	re = new RegExp("(?:https://www.youtube.com/watch\\?v=|youtu.be/)([0-9A-Za-z_-]+)");
+  	newVid = re.exec(document.getElementById("url").value);
+    if (newVid === null) {
+        window.alert('Invalid Youtube URL!');
+        return;
+    }
+    vid = newVid[1];
   	player.loadVideoById(vid, 0);
   
   	count = 0;
