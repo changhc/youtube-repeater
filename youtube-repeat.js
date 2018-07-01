@@ -56,8 +56,10 @@ function onPlayerStateChange(event) {
             cookies[cookieIdx] = 'id=' + event.target.getVideoData()['video_id'];
         } else if (document.cookie === "") {
             cookies[0] = 'id=' + event.target.getVideoData()['video_id'];
+            cookieIdx = 0;
         } else {
             cookies.push('id=' + event.target.getVideoData()['video_id']);
+            cookieIdx = cookies.length - 1
         }
 
         document.cookies = cookies.join('; ');
