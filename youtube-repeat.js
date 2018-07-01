@@ -1,6 +1,5 @@
 var vid = 'qO8yfBLNVjU';
 var cookies = document.cookie.split(';');
-var cookieIdx = -1;
 for (let i = 0; i < cookies.length; i += 1) {
     if (cookies[i][0] === ' ') {
         cookies[i] = cookies[i].substr(1);
@@ -8,7 +7,6 @@ for (let i = 0; i < cookies.length; i += 1) {
     let pair = cookies[i].split('=');
     if (pair.length > 1 && pair[0] === 'id') {
         vid = pair[1];
-        cookieIdx = i;
     }
 }
 
@@ -52,18 +50,25 @@ function onPlayerStateChange(event) {
 		document.getElementById("repeatTime").innerHTML = count.toString();
   	}
   	else if(event.data == YT.PlayerState.PLAYING){
-        if (cookieIdx !== -1) {
-            cookies[cookieIdx] = 'id=' + event.target.getVideoData()['video_id'];
-        } else if (document.cookie === "") {
+        cookies = document.cookie.split(';');
+        let id = -1
+        for (let i = 0; i < cookies.length; i += 1) {
+            if (cookies[i][0] === ' ') {
+                cookies[i] = cookies[i].substr(1);
+            }
+            let pair = cookies[i].split('=');
+            if (pair.length > 1 && pair[0] === 'id') {
+                cookies[cookieIdx] = 'id=' + event.target.getVideoData()['video_id'];
+                id = i;
+            }
+        }
+        if (document.cookie === "") {
             cookies[0] = 'id=' + event.target.getVideoData()['video_id'];
-            cookieIdx = 0;
-        } else {
+        } else if (id === -1) {
             cookies.push('id=' + event.target.getVideoData()['video_id']);
-            cookieIdx = cookies.length - 1
         }
 
-        document.cookies = cookies.join('; ');
-        console.log(document.cookies);
+        document.cookie = cookies.join('; ');
 		document.getElementById("videoName").innerHTML = player.getVideoData().title;
   	}
 }
