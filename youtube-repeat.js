@@ -1,4 +1,17 @@
-var vid = document.cookie === "" ? 'qO8yfBLNVjU' : document.cookie;
+var vid = 'qO8yfBLNVjU';
+var cookies = document.cookie.split(';');
+var cookieIdx = -1;
+for (let i = 0; i < cookies.length; i += 1) {
+    if (cookies[i][0] === ' ') {
+        cookies[i] = cookies[i].substr(1);
+    }
+    let pair = cookies[i].split('=');
+    if (pair.length > 1 && pair[0] === 'id') {
+        vid = pair[1];
+        cookieIdx = i;
+    }
+}
+
 var count = 0;
 var isRepeating = true;
 
@@ -24,7 +37,7 @@ function onYouTubeIframeAPIReady() {
 
 
 function onPlayerReady(event) {
-  event.target.playVideo();
+    event.target.playVideo();
 }
 
 function onPlayerError(event) {
@@ -39,7 +52,16 @@ function onPlayerStateChange(event) {
 		document.getElementById("repeatTime").innerHTML = count.toString();
   	}
   	else if(event.data == YT.PlayerState.PLAYING){
-        document.cookie = event.target.getVideoData()['video_id'];
+        if (cookieIdx !== -1) {
+            cookies[cookieIdx] = 'id=' + event.target.getVideoData()['video_id'];
+        } else if (document.cookie === "") {
+            cookies[0] = 'id=' + event.target.getVideoData()['video_id'];
+        } else {
+            cookies.push('id=' + event.target.getVideoData()['video_id']);
+        }
+
+        document.cookies = cookies.join('; ');
+        console.log(document.cookies);
 		document.getElementById("videoName").innerHTML = player.getVideoData().title;
   	}
 }
