@@ -58,7 +58,7 @@ function onPlayerStateChange(event) {
             }
             let pair = cookies[i].split('=');
             if (pair.length > 1 && pair[0] === 'id') {
-                cookies[cookieIdx] = 'id=' + event.target.getVideoData()['video_id'];
+                cookies[i] = 'id=' + event.target.getVideoData()['video_id'];
                 id = i;
             }
         }
