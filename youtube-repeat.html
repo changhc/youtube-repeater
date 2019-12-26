@@ -11,11 +11,27 @@
         <button onclick="submitID()">GO !</button>
       </div>
       <div class="row">
-        <div class="rowElement">Repeating: </div>
-        <div class="rowElement" id="repeatStatus">Enabled</div>
-        <button id="repeatButton" onclick="RepeatButtonClicked()">Disable</button>
-        <div class="rowElement">Repeated times: </div>
-        <div id=repeatTime class="rowElement">0</div>
+        <div class="block">
+          <div class="rowElement">Start time: </div>
+          <input type="text" class="time" id="startTime">
+          <button onclick="StartTimeButtonClicked()">Set</button>
+        </div>
+        <div class="block">
+          <div class="rowElement">End time: </div>
+          <input type="text" class="time" id="endTime">
+          <button onclick="EndTimeButtonClicked()">Set</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="block">
+          <div class="rowElement">Repeating: </div>
+          <div class="rowElement" id="repeatStatus">Enabled</div>
+          <button onclick="RepeatButtonClicked()">Disable</button>
+        </div>
+        <div class="block">
+          <div class="rowElement">Repeated times: </div>
+          <div id=repeatTime class="rowElement">0</div>
+        </div>
       </div>
       <div class="row">
         <h4 class="rowElement">Now Playing:   </h4>
