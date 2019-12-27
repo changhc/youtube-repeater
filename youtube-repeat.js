@@ -5,26 +5,31 @@ var prevTime = -1;
 var count = 0;
 var isRepeating = true;
 
-var cookies = document.cookie.split(';');
-for (let i = 0; i < cookies.length; i += 1) {
-	if (cookies[i][0] === ' ') {
-		cookies[i] = cookies[i].substr(1);
-	}
+const START_COOKIE_KEY = 'start';
+const END_COOKIE_KEY = 'end';
+const ID_COOKIE_KEY = 'id';
 
-	let pair = cookies[i].split('=');
-	if (pair.length > 1) {
-		if (pair[0] === 'id') {
-			vid = pair[1];
-		} else if (pair[0] === 'start') {
-			start = parseInt(pair[1], 10);
-		} else if (pair[0] === 'end') {
-			end = parseInt(pair[1], 10);
+(() => {
+	const cookies = document.cookie.split(';');
+	for (let i = 0; i < cookies.length; i += 1) {
+		if (cookies[i][0] === ' ') {
+			cookies[i] = cookies[i].substr(1);
+		}
+
+		let pair = cookies[i].split('=');
+		if (pair.length > 1) {
+			if (pair[0] === ID_COOKIE_KEY) {
+				vid = pair[1];
+			} else if (pair[0] === START_COOKIE_KEY) {
+				start = parseInt(pair[1], 10);
+			} else if (pair[0] === END_COOKIE_KEY) {
+				end = parseInt(pair[1], 10);
+			}
 		}
 	}
-}
+})();
 
 var tag = document.createElement('script');
-
 tag.src = 'https://www.youtube.com/iframe_api';
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -78,31 +83,17 @@ function onPlayerStateChange(event) {
 		count += 1;
 		document.getElementById('repeatTime').innerHTML = count.toString();
 	} else if (event.data == YT.PlayerState.PLAYING) {
-		cookies = document.cookie.split(';');
-		let id = -1;
-		for (let i = 0; i < cookies.length; i += 1) {
-			if (cookies[i][0] === ' ') {
-				cookies[i] = cookies[i].substr(1);
-			}
-			let pair = cookies[i].split('=');
-			if (pair.length > 1 && pair[0] === 'id') {
-				cookies[i] = 'id=' + event.target.getVideoData()['video_id'];
-				id = i;
-			}
-		}
-		if (document.cookie === '') {
-			cookies[0] = 'id=' + event.target.getVideoData()['video_id'];
-		} else if (id === -1) {
-			cookies.push('id=' + event.target.getVideoData()['video_id']);
-		}
+		SetCookie(ID_COOKIE_KEY, event.target.getVideoData()['video_id']);
+		SetCookie(START_COOKIE_KEY, start);
+		SetCookie(END_COOKIE_KEY, end);
 
 		if (prevTime !== -1) {
 			player.seekTo(prevTime, true);
 			prevTime = -1;
 		}
 
-		document.cookie = cookies.join('; ');
 		document.getElementById('videoName').innerHTML = player.getVideoData().title;
+		document.getElementById('url').value = `https://www.youtube.com/watch?v=${vid}`;
 	}
 }
 
@@ -251,4 +242,8 @@ function TimeStringToNumber(timeString) {
 	}
 
 	return startTime;
+}
+
+function SetCookie(key, value) {
+	document.cookie = `${key}=${value}`;
 }
