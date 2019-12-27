@@ -1,6 +1,10 @@
 var vid = 'qO8yfBLNVjU';
 var start = 0;
 var end = -1;
+var prevTime = -1;
+var count = 0;
+var isRepeating = true;
+
 var cookies = document.cookie.split(';');
 for (let i = 0; i < cookies.length; i += 1) {
 	if (cookies[i][0] === ' ') {
@@ -18,9 +22,6 @@ for (let i = 0; i < cookies.length; i += 1) {
 		}
 	}
 }
-
-var count = 0;
-var isRepeating = true;
 
 var tag = document.createElement('script');
 
@@ -56,6 +57,14 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(event) {
 	event.target.playVideo();
+
+	const duration = player.getDuration();
+	if (end === -1) {
+		end = duration;
+	}
+
+	document.getElementById('startTime').value = NumberToTimeString(start, duration);
+	document.getElementById('endTime').value = NumberToTimeString(end, duration);
 }
 
 function onPlayerError() {
@@ -63,7 +72,7 @@ function onPlayerError() {
 }
 
 function onPlayerStateChange(event) {
-  	if (event.data == YT.PlayerState.ENDED && isRepeating) {
+  if (event.data == YT.PlayerState.ENDED && isRepeating) {
 		player.seekTo(start);
 		player.playVideo();
 		count += 1;
@@ -85,6 +94,11 @@ function onPlayerStateChange(event) {
 			cookies[0] = 'id=' + event.target.getVideoData()['video_id'];
 		} else if (id === -1) {
 			cookies.push('id=' + event.target.getVideoData()['video_id']);
+		}
+
+		if (prevTime !== -1) {
+			player.seekTo(prevTime, true);
+			prevTime = -1;
 		}
 
 		document.cookie = cookies.join('; ');
@@ -134,23 +148,66 @@ function RepeatButtonClicked() {
 function StartTimeButtonClicked() {
 	const timeString = document.getElementById('startTime').value;
 	const startTime = TimeStringToNumber(timeString);
+	if (startTime === start) {
+		return;
+	}
 
 	const playerState = player.getPlayerState();
 
 	if (playerState !== -1) {
 		// We can assume that the video remains the same when this button is clicked
 		const duration = player.getDuration();
-		if (startTime > duration || startTime < 0) {
+		if (startTime > duration || startTime < 0 || startTime > end) {
 			document.getElementById('startTime').value = NumberToTimeString(start, duration);
 			window.alert('Invalid start time');
 			return;
 		}
 
+		const currentTime = player.getCurrentTime();
 		start = startTime;
-		player.destroy();
-		init();
+		player.loadVideoById({
+			videoId: vid,
+			startSeconds: start,
+			endSeconds: end
+		});
+
+		if (currentTime > start) {
+			prevTime = currentTime;
+		}
 	}
 }
+
+function EndTimeButtonClicked() {
+	const timeString = document.getElementById('endTime').value;
+	const endTime = TimeStringToNumber(timeString);
+	if (endTime === end) {
+		return;
+	}
+
+	const playerState = player.getPlayerState();
+
+	if (playerState !== -1) {
+		// We can assume that the video remains the same when this button is clicked
+		const duration = player.getDuration();
+		if (endTime > duration || endTime < 0) {
+			document.getElementById('endTime').value = NumberToTimeString(end, duration);
+			window.alert('Invalid end time');
+			return;
+		}
+		const currentTime = player.getCurrentTime();
+		end = endTime;
+		player.loadVideoById({
+			videoId: vid,
+			startSeconds: start,
+			endSeconds: end
+		});
+
+		if (currentTime < end) {
+			prevTime = currentTime;
+		}
+	}
+}
+
 
 function NumberToTimeString(time, duration) {
 	let length = 1;
