@@ -59,17 +59,8 @@ function onYouTubeIframeAPIReady() {
 	init();
 }
 
-
 function onPlayerReady(event) {
 	event.target.playVideo();
-
-	const duration = player.getDuration();
-	if (end === -1) {
-		end = duration;
-	}
-
-	document.getElementById('startTime').value = NumberToTimeString(start, duration);
-	document.getElementById('endTime').value = NumberToTimeString(end, duration);
 }
 
 function onPlayerError() {
@@ -91,6 +82,14 @@ function onPlayerStateChange(event) {
 			player.seekTo(prevTime, true);
 			prevTime = -1;
 		}
+
+		const duration = player.getDuration();
+		if (end === -1) {
+			end = duration;
+		}
+
+		document.getElementById('startTime').value = NumberToTimeString(start, duration);
+		document.getElementById('endTime').value = NumberToTimeString(end, duration);
 
 		document.getElementById('videoName').innerHTML = player.getVideoData().title;
 		document.getElementById('url').value = `https://www.youtube.com/watch?v=${vid}`;
