@@ -61,6 +61,7 @@ function onYouTubeIframeAPIReady() {
 
 function onPlayerReady(event) {
 	event.target.playVideo();
+	document.title = `Youtube Repeater - ${event.target.videoTitle}`
 }
 
 function onPlayerError() {
@@ -91,8 +92,10 @@ function onPlayerStateChange(event) {
 		document.getElementById('startTime').value = NumberToTimeString(start, duration);
 		document.getElementById('endTime').value = NumberToTimeString(end, duration);
 
-		document.getElementById('videoName').innerHTML = player.getVideoData().title;
+		const videoTitle = player.getVideoData().title;
+		document.getElementById('videoName').innerHTML = videoTitle;
 		document.getElementById('url').value = `https://www.youtube.com/watch?v=${vid}`;
+		document.title = `Youtube Repeater - ${videoTitle}`
 	}
 }
 
